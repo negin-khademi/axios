@@ -1,70 +1,164 @@
-# Getting Started with Create React App
+# Axios Tutorial
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### Docs
 
-## Available Scripts
+[Axios Docs](https://axios-http.com/docs/intro)
 
-In the project directory, you can run:
+#### Install
 
-### `npm start`
+```sh
+npm install axios
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```js
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### First Request
 
-### `npm test`
+- import axios
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- axios.get(url)
+- axios.post(url)
+- axios.patch/put(url)
+- axios.delete(url)
 
-### `npm run build`
+- default get axios(url)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- returns a promise
+- response data located in data property
+- error in error.response
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```js
+import axios from 'axios';
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const fetchData = async () => {
+  try {
+    // axios.get(), axios.post(),axios.put(), axios.delete()
+    const response = await axios(url);
 
-### `npm run eject`
+    console.log(response);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### Headers
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- second argument
+- axios.get(url,{})
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- third argument in requests with data
+- axios.post(url,{data},{})
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```js
+const fetchDadJoke = async () => {
+  try {
+    const { data } = await axios(url, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+    // console.log(data);
+    setJoke(data.joke);
+  } catch (error) {
+    console.log(error.response);
+  }
+};
+```
 
-## Learn More
+#### Post Request
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- send data to the server
+- axios.post(url, { data })
+- more options (auth header) - axios.post(url, { data },{})
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```js
+try {
+  const resp = await axios.post(url, { data });
+} catch (error) {
+  console.log(error.response.data);
+}
+```
 
-### Code Splitting
+#### Global Defaults
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```js
+// In latest axios version common property returns "undefined"
+// axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers['Accept'] = 'application/json';
 
-### Analyzing the Bundle Size
+axios.defaults.baseURL = 'https://api.example.com';
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+// In latest axios version common property returns "undefined"
+// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+axios.defaults.headers['Authorization'] = AUTH_TOKEN;
 
-### Making a Progressive Web App
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Custom Instance
 
-### Advanced Configuration
+```js
+const authFetch = axios.create({
+  baseURL: 'https://www.course-api.com',
+  headers: {
+    Accept: 'application/json',
+  },
+});
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### Interceptors
 
-### Deployment
+- global and custom
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```js
+authFetch.interceptors.request.use(
+  (request) => {
+    // request.headers.common['Accept'] = `application/json`;
+    request.headers['Accept'] = `application/json`;
 
-### `npm run build` fails to minify
+    console.log('request sent');
+    // must return request
+    return request;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+authFetch.interceptors.response.use(
+  (response) => {
+    console.log('got response');
+    return response;
+  },
+  (error) => {
+    console.log(error.response);
+    if (error.response.status === 404) {
+      // do something
+      console.log('NOT FOUND');
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+##### Update
+
+In the latest version there is no common property
+
+```js
+// In latest axios version common property returns "undefined"
+// axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers['Accept'] = 'application/json';
+
+// In latest axios version common property returns "undefined"
+// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+axios.defaults.headers['Authorization'] = AUTH_TOKEN;
+```
+
+```js
+// request.headers.common['Accept'] = `application/json`;
+request.headers['Accept'] = `application/json`;
+```
