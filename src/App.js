@@ -1,10 +1,10 @@
-import FirstRequest from './FirstRequest';
+import Header from './Header';
 import Title from './Title';
 function App() {
   return (
     <main>
       <Title />
-      <FirstRequest />
+      <Header />
     </main>
   );
 }
