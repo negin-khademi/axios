@@ -1,10 +1,10 @@
-import PostRequest from './PostRequest';
+import GlobalInstance from './GlobalInstance';
 import Title from './Title';
 function App() {
   return (
     <main>
       <Title />
-      <PostRequest />
+      <GlobalInstance />
     </main>
   );
 }
