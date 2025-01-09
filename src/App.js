@@ -1,10 +1,10 @@
-import Header from './Header';
+import PostRequest from './PostRequest';
 import Title from './Title';
 function App() {
   return (
     <main>
       <Title />
-      <Header />
+      <PostRequest />
     </main>
   );
 }
