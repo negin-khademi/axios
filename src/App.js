@@ -1,5 +1,8 @@
+import './axios/global';
+
 import GlobalInstance from './GlobalInstance';
 import Title from './Title';
+
 function App() {
   return (
     <main>
